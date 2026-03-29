@@ -10,7 +10,7 @@ This GitHub repo is **HA-only** (the `cattracker/` add-on folder at the repo roo
 2. Refresh the store, install **Cat Tracker**, configure options, **Start**.
 3. Enable **MQTT** (e.g. Mosquitto add-on). Set **mqtt_host** to your broker (often `core-mosquitto` for the official Mosquitto add-on on the same host).
 4. **Gemini**: set **identification** to `gemini` and paste **gemini_api_key**. Edit prompts by mapping a file over `/app/gemini_cats.txt` or rebuild after changing the repo copy.
-5. **Ref mode**: set **identification** to `ref` and add photos under **Share** → `cattracker/ref/<CatName>/` (see main project `ref/readme.txt`).
+5. **Ref mode**: set **identification** to `ref` and add photos under **Share** → `cattracker/ref/<CatName>/` (one folder per cat name, JPG/PNG inside).
 
 ## MQTT
 
@@ -29,15 +29,16 @@ export CATTRACKER_HEADLESS=1
 python run.py --gemini --headless --mqtt-host <broker> --web-host 0.0.0.0
 ```
 
-## Maintainer sync
+## Updating the add-on copy from a full CatTracker tree
 
-From the repository root (parent of this folder):
+If you keep the **full app** elsewhere, refresh `cattracker/cat_tracker/`, `run.py`, `requirements.txt`, and `gemini_cats.txt` before committing:
 
 ```bash
-./scripts/sync_ha_addon.sh
+rsync -a --delete --exclude '__pycache__' /path/to/full/cat_tracker/ ./cattracker/cat_tracker/
+cp /path/to/full/run.py /path/to/full/requirements.txt /path/to/full/gemini_cats.txt ./cattracker/
 ```
 
-Then rebuild the add-on.
+Then commit and push this repo.
 
 ## Notes
 
