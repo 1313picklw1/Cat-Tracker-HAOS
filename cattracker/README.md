@@ -14,6 +14,13 @@ The **first install builds a Docker image** and downloads **PyTorch + dependenci
 
 If **nothing** new appears in logs for **well over an hour**, check **disk space**, **RAM** (Pi OOM), and **network** (Pi-hole / firewall blocking `pypi.org` / `download.pytorch.org`).
 
+### Nothing downloads at all (install never starts)
+
+The first step must **pull the base image** from **Docker Hub** (`python:3.11-slim-bookworm`). If your HA host or VM **blocks `registry-1.docker.io`** or **`ghcr.io`**, the UI can sit forever with no visible progress.
+
+- On the HA host (SSH): `docker pull python:3.11-slim-bookworm` — if this hangs or errors, fix **DNS / firewall / proxy** first.
+- This add-on uses **Docker Hub** for the base (not GitHub Container Registry) so it works on networks that only allow Docker Hub.
+
 ## Install
 
 1. **Settings → Add-ons → Add-on store → ⋮ → Repositories** and add the **repository URL** (root must contain this `cattracker` folder and `repository.json`).
@@ -55,7 +62,7 @@ This add-on uses **opencv-python-headless** and **no PortAudio** (no `sounddevic
 
 ### `apt-get: not found` / `/bin/ash`
 
-Supervisor was using an **Alpine** base while the Dockerfile used **`apt-get`** (Debian). This repo’s **`build.yaml`** now pins **`ghcr.io/home-assistant/*-base-debian:bookworm`** so the image is always **Debian** with `apt-get`. Use add-on **1.0.3+** and **Rebuild**.
+That means the build used an **Alpine** base. This repo’s **`build.yaml`** pins **`python:3.11-slim-bookworm`** (Debian on **Docker Hub**) so **`apt-get`** exists. If you still see Alpine, your Supervisor may be ignoring `build.yaml` — open an issue with your HA OS / Supervisor version. **Rebuild** after updating.
 
 ## MQTT
 

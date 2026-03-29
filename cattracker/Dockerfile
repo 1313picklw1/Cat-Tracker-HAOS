@@ -1,5 +1,5 @@
-# Supervisor sets BUILD_FROM from build.yaml (must be Debian here — Alpine has no apt-get).
-ARG BUILD_FROM
+# Debian bookworm via official Python image (Docker Hub). Supervisor passes BUILD_FROM from build.yaml.
+ARG BUILD_FROM=python:3.11-slim-bookworm
 FROM ${BUILD_FROM}
 
 ARG BUILD_ARCH=unknown
@@ -15,12 +15,9 @@ ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
     PIP_NO_CACHE_DIR=1 \
     PYTHONUNBUFFERED=1
 
-# HA base-debian is minimal: install Python 3.11 + venv + runtime libs.
-RUN echo "=== CatTracker [1/6] apt-get: system packages ===" && date -u \
+# Base image already includes Python + pip; only add OS tools for OpenCV/ffmpeg and jq for run.sh.
+RUN echo "=== CatTracker [1/6] apt-get: ffmpeg, jq, libs ===" && date -u \
  && apt-get update && apt-get install -y --no-install-recommends \
-    python3 \
-    python3-venv \
-    python3-pip \
     ffmpeg \
     jq \
     libglib2.0-0 \
@@ -36,7 +33,7 @@ COPY run.sh /run.sh
 RUN chmod +x /run.sh
 
 RUN echo "=== CatTracker [2/6] python venv ===" && date -u \
- && python3 -m venv /opt/venv \
+ && python -m venv /opt/venv \
  && echo "=== CatTracker [2/6] done ===" && date -u
 
 ENV PATH="/opt/venv/bin:$PATH"
