@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+*.egg-info/
+dist/
+build/
+
+# ML / large downloads
+*.pt
+yolov8*.pt
+
+# Local data (regenerate on device)
+sightings/
+recordings/
+*.mp4
+*.avi
+
+# VM / disk images
+haos.hdd/
+
+# macOS
+.DS_Store
+
+# Editor
+.idea/
+.vscode/
