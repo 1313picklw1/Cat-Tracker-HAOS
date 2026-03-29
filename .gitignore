@@ -5,25 +5,22 @@ __pycache__/
 venv/
 .env
 *.egg-info/
-dist/
-build/
 
-# ML / large downloads
-*.pt
-yolov8*.pt
-
-# Local data (regenerate on device)
+# Local / generated
 sightings/
 recordings/
-*.mp4
-*.avi
-
-# VM / disk images
 haos.hdd/
+*.pt
+yolov8*.pt
 
 # macOS
 .DS_Store
 
-# Editor
-.idea/
-.vscode/
+# Full CatTracker app (optional local copy; this repo is HA add-on only)
+/run.py
+/run_web.py
+/readme.txt
+/gemini_cats.txt
+/cat_tracker/
+/ref/
+/scripts/

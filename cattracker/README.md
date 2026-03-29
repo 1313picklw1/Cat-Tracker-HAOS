@@ -1,10 +1,12 @@
 # Cat Tracker — Home Assistant add-on
 
-Supervisor add-on: USB webcam + YOLO + optional Gemini (or `ref/` photos) + web UI + MQTT entities for Home Assistant.
+Supervisor add-on: USB webcam + YOLO + optional Gemini (or `ref/` photos on Share) + web UI + MQTT entities for Home Assistant.
+
+This GitHub repo is **HA-only** (the `cattracker/` add-on folder at the repo root). Source for the full desktop app lives in your local project copy, not in this remote.
 
 ## Install
 
-1. **Settings → Add-ons → Add-on store → ⋮ → Repositories** and add this **Git repository URL** (the repo whose root contains this `cattracker` folder and `repository.json`).
+1. **Settings → Add-ons → Add-on store → ⋮ → Repositories** and add the **repository URL** (root must contain this `cattracker` folder and `repository.json`).
 2. Refresh the store, install **Cat Tracker**, configure options, **Start**.
 3. Enable **MQTT** (e.g. Mosquitto add-on). Set **mqtt_host** to your broker (often `core-mosquitto` for the official Mosquitto add-on on the same host).
 4. **Gemini**: set **identification** to `gemini` and paste **gemini_api_key**. Edit prompts by mapping a file over `/app/gemini_cats.txt` or rebuild after changing the repo copy.
