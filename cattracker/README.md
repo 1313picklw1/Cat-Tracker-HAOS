@@ -7,10 +7,33 @@ This GitHub repo is **HA-only** (the `cattracker/` add-on folder at the repo roo
 ## Install
 
 1. **Settings → Add-ons → Add-on store → ⋮ → Repositories** and add the **repository URL** (root must contain this `cattracker` folder and `repository.json`).
-2. Refresh the store, install **Cat Tracker**, configure options, **Start**.
-3. Enable **MQTT** (e.g. Mosquitto add-on). Set **mqtt_host** to your broker (often `core-mosquitto` for the official Mosquitto add-on on the same host).
-4. **Gemini**: set **identification** to `gemini` and paste **gemini_api_key**. Edit prompts by mapping a file over `/app/gemini_cats.txt` or rebuild after changing the repo copy.
-5. **Ref mode**: set **identification** to `ref` and add photos under **Share** → `cattracker/ref/<CatName>/` (one folder per cat name, JPG/PNG inside).
+2. Refresh the store, install **Cat Tracker**, open **Configuration**, then **Start**.
+
+### Options (UI)
+
+| Option | Purpose |
+|--------|--------|
+| **Camera source** | **USB** = local camera (`camera_usb_index`, usually `0`). **IP** = network stream (`camera_url`: `rtsp://…`, `http://…` MJPEG, etc.). |
+| **Mirror camera** | Flip image for USB selfie cams; turn **off** for most IP cameras if the picture looks mirrored. |
+| **Identification** | **Gemini** (needs **Gemini API key** + optional **Gemini model**), **ref** (photos on Share), or **none**. |
+| **MQTT broker host** | e.g. `core-mosquitto` — leave empty to disable MQTT entities. |
+| **Record microphone** | Default **off** in Docker (no PortAudio); clips are video-only unless you know your setup supports audio. |
+
+Edit **`gemini_cats.txt`** in the image by rebuilding after changing the repo, or map a file over `/app/gemini_cats.txt` with advanced Docker overrides.
+
+**Ref mode:** add photos under **Share** → `cattracker/ref/<CatName>/` (one folder per cat name).
+
+3. Enable **MQTT** in Home Assistant if you set **mqtt_host**.
+
+## Build failed (“unknown error”)
+
+The first install **builds a large image** (PyTorch + YOLO). Check:
+
+1. **Disk space** — need several GB free on the HA host (Supervisor blocks git/build when almost full).
+2. **Logs** — **Settings → System → Logs**, or SSH: `ha supervisor logs`, or **Add-on** → **Log** after a failed build.
+3. **RAM** — Raspberry Pi builds can OOM; try a **PC / NUC** HA install or increase swap (advanced).
+
+This add-on uses **opencv-python-headless** and **no `sounddevice`** by default so the Docker build does not compile PortAudio.
 
 ## MQTT
 

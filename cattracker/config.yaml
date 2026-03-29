@@ -1,11 +1,10 @@
 ---
 name: Cat Tracker
-version: "1.0.0"
+version: "1.0.1"
 slug: cattracker
 description: >-
-  Detect cats on a USB webcam (YOLO), optional Gemini naming, web dashboard,
-  and MQTT entities for Home Assistant (with the MQTT integration).
-url: https://www.home-assistant.io/docs/add-ons/
+  Detect cats (YOLO), optional Gemini naming, web UI on port 5050, MQTT for Home Assistant.
+url: https://github.com/1313picklw1/Cat-Tracker-HAOS
 arch:
   - amd64
   - aarch64
@@ -17,11 +16,15 @@ map:
 ports:
   5050/tcp: 5050
 ports_description:
-  5050/tcp: Web dashboard (MJPEG live + sightings)
+  5050/tcp: Web dashboard (live MJPEG + sightings)
 options:
-  camera: "0"
+  camera_source: usb
+  camera_usb_index: "0"
+  camera_url: ""
+  mirror_camera: true
   identification: gemini
   gemini_api_key: ""
+  gemini_model: gemini-2.5-flash
   camera_id: main
   camera_label: Cat Tracker
   mqtt_host: ""
@@ -29,13 +32,18 @@ options:
   mqtt_user: ""
   mqtt_password: ""
   web_port: 5050
+  record_audio: false
   recordings_subdir: cattracker/recordings
   sightings_subdir: cattracker/sightings
   ref_subdir: cattracker/ref
 schema:
-  camera: str
+  camera_source: list(usb|ip)
+  camera_usb_index: str?
+  camera_url: str?
+  mirror_camera: bool
   identification: list(gemini|ref|none)
   gemini_api_key: password?
+  gemini_model: str?
   camera_id: str
   camera_label: str
   mqtt_host: str
@@ -43,6 +51,7 @@ schema:
   mqtt_user: str?
   mqtt_password: password?
   web_port: port
+  record_audio: bool
   recordings_subdir: str
   sightings_subdir: str
   ref_subdir: str

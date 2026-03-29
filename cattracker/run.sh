@@ -7,7 +7,6 @@ if [ ! -f "$CFG" ]; then
   exit 1
 fi
 
-CAM=$(jq -r '.camera // "0"' "$CFG")
 IDENT=$(jq -r '.identification // "gemini"' "$CFG")
 KEY=$(jq -r '.gemini_api_key // ""' "$CFG")
 MQTT_HOST=$(jq -r '.mqtt_host // ""' "$CFG")
@@ -20,6 +19,28 @@ SIG_SUB=$(jq -r '.sightings_subdir // "cattracker/sightings"' "$CFG")
 REF_SUB=$(jq -r '.ref_subdir // "cattracker/ref"' "$CFG")
 CAM_ID=$(jq -r '.camera_id // "main"' "$CFG")
 CAM_LABEL=$(jq -r '.camera_label // "Cat Tracker"' "$CFG")
+GEMINI_MODEL=$(jq -r '.gemini_model // "gemini-2.5-flash"' "$CFG")
+CAM_SRC=$(jq -r '.camera_source // "usb"' "$CFG")
+
+case "$CAM_SRC" in
+  ip)
+    CAM=$(jq -r '.camera_url // ""' "$CFG")
+    if [ -z "$CAM" ] || [ "$CAM" = "null" ]; then
+      echo "CatTracker: camera_source is ip — set camera_url (rtsp://… or http://… MJPEG)." >&2
+      exit 1
+    fi
+    echo "CatTracker: using IP / stream camera" >&2
+    ;;
+  *)
+    CAM=$(jq -r '.camera_usb_index // .camera // "0"' "$CFG")
+    echo "CatTracker: using local USB camera index $CAM" >&2
+    ;;
+esac
+
+if [ "$IDENT" = "gemini" ] && [ -z "$KEY" ]; then
+  echo "CatTracker: identification is gemini — set gemini_api_key in add-on options." >&2
+  exit 1
+fi
 
 RECORD_DIR="/share/${REC_SUB}"
 SIGHTINGS_DIR="/share/${SIG_SUB}"
@@ -47,11 +68,29 @@ set -- python /app/run.py \
   --record-dir "$RECORD_DIR" \
   --sightings-dir "$SIGHTINGS_DIR"
 
+# mirror_camera true = horizontal flip (default for many USB webcams). false = --no-mirror
+if [ "$(jq -r '.mirror_camera // true' "$CFG")" != "true" ]; then
+  set -- "$@" --no-mirror
+fi
+
+# Microphone in container usually unavailable; default off unless explicitly enabled
+if [ "$(jq -r '.record_audio // false' "$CFG")" != "true" ]; then
+  set -- "$@" --no-record-audio
+fi
+
 case "$IDENT" in
-  gemini) set -- "$@" --gemini ;;
-  ref) set -- "$@" --ref-dir "$REF_DIR" ;;
-  none) set -- "$@" --no-id ;;
-  *) set -- "$@" --gemini ;;
+  gemini)
+    set -- "$@" --gemini --gemini-model "$GEMINI_MODEL"
+    ;;
+  ref)
+    set -- "$@" --ref-dir "$REF_DIR"
+    ;;
+  none)
+    set -- "$@" --no-id
+    ;;
+  *)
+    set -- "$@" --gemini --gemini-model "$GEMINI_MODEL"
+    ;;
 esac
 
 exec "$@"

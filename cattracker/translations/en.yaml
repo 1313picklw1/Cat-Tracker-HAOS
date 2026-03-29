@@ -1,0 +1,54 @@
+---
+configuration:
+  camera_source:
+    name: Camera source
+    description: >-
+      USB = local /dev/video index. IP = RTSP, HTTP MJPEG, or other OpenCV URL.
+  camera_usb_index:
+    name: USB camera index
+    description: >-
+      When source is USB — usually 0 for the first camera (maps to --camera).
+  camera_url:
+    name: Stream URL (IP camera)
+    description: >-
+      When source is IP — e.g. rtsp://user:pass@192.168.1.50:554/stream or http://…/video.mjpg
+  mirror_camera:
+    name: Mirror camera (USB)
+    description: >-
+      Horizontal flip for selfie-style USB webcams. Turn off for IP streams if picture looks wrong.
+  identification:
+    name: Cat naming
+    description: Gemini (API key + text prompts), ref photos on Share, or none.
+  gemini_api_key:
+    name: Gemini API key
+    description: From Google AI Studio (GEMINI_API_KEY). Required when naming is Gemini.
+  gemini_model:
+    name: Gemini model id
+    description: e.g. gemini-2.5-flash or gemini-2.5-flash-lite
+  camera_id:
+    name: Camera entity id
+    description: Unique id for MQTT / live state when running multiple trackers.
+  camera_label:
+    name: Friendly name
+    description: Shown in Home Assistant device name and dashboard.
+  mqtt_host:
+    name: MQTT broker host
+    description: Leave empty to disable MQTT. Often core-mosquitto for the official Mosquitto add-on.
+  mqtt_port:
+    name: MQTT port
+  mqtt_user:
+    name: MQTT username
+  mqtt_password:
+    name: MQTT password
+  web_port:
+    name: Web dashboard port
+  record_audio:
+    name: Record microphone into clips
+    description: >-
+      Usually off in Docker (no mic). Requires sounddevice + ffmpeg; may fail to build if enabled without PortAudio.
+  recordings_subdir:
+    name: Recordings folder under /share
+  sightings_subdir:
+    name: Sightings folder under /share
+  ref_subdir:
+    name: Ref photos folder under /share (ref mode)
