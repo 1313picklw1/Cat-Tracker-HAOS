@@ -1,5 +1,6 @@
 #!/bin/sh
 set -e
+echo "CatTracker: container starting $(date -u -Iseconds)" >&2
 CFG="/data/options.json"
 
 if [ ! -f "$CFG" ]; then

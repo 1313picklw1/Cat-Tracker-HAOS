@@ -1,6 +1,6 @@
 ---
 name: Cat Tracker
-version: "1.0.4"
+version: "1.0.5"
 slug: cattracker
 description: >-
   Detect cats (YOLO), optional Gemini naming, web UI on port 5050, MQTT for Home Assistant.

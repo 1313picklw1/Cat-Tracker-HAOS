@@ -4,10 +4,20 @@ Supervisor add-on: USB webcam + YOLO + optional Gemini (or `ref/` photos on Shar
 
 This GitHub repo is **HA-only** (the `cattracker/` add-on folder at the repo root). Source for the full desktop app lives in your local project copy, not in this remote.
 
+## Stuck on “Installing”?
+
+The **first install builds a Docker image** and downloads **PyTorch + dependencies (often ~1–2 GB)**. On a Raspberry Pi or slow internet this can take **20–60+ minutes** and the UI barely moves — that is normal.
+
+- **Confirm it is working:** SSH / **Terminal** add-on → `ha supervisor logs` (or `docker logs hassio_supervisor`) and look for lines like **`CatTracker [4/6] PyTorch`** — if that line appeared, it is downloading; wait longer.
+- **Do not** cancel and retry every minute (you restart the big download).
+- After it finishes once, **updates are faster** (layers cached).
+
+If **nothing** new appears in logs for **well over an hour**, check **disk space**, **RAM** (Pi OOM), and **network** (Pi-hole / firewall blocking `pypi.org` / `download.pytorch.org`).
+
 ## Install
 
 1. **Settings → Add-ons → Add-on store → ⋮ → Repositories** and add the **repository URL** (root must contain this `cattracker` folder and `repository.json`).
-2. Refresh the store, install **Cat Tracker**, open **Configuration**, then **Start**.
+2. Refresh the store, install **Cat Tracker** (expect a long first build), open **Configuration**, then **Start**.
 
 ### Options (UI)
 
