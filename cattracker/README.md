@@ -27,13 +27,21 @@ Edit **`gemini_cats.txt`** in the image by rebuilding after changing the repo, o
 
 ## Build failed (“unknown error”)
 
-The first install **builds a large image** (PyTorch + YOLO). Check:
+Supervisor often hides the real error behind that message. You need the **build** log:
 
-1. **Disk space** — need several GB free on the HA host (Supervisor blocks git/build when almost full).
-2. **Logs** — **Settings → System → Logs**, or SSH: `ha supervisor logs`, or **Add-on** → **Log** after a failed build.
-3. **RAM** — Raspberry Pi builds can OOM; try a **PC / NUC** HA install or increase swap (advanced).
+1. **SSH / Terminal add-on** (or host shell):  
+   `ha supervisor logs`  
+   or  
+   `docker logs hassio_supervisor 2>&1 | tail -200`  
+   Scroll for `cattracker`, `pip`, `torch`, `no space`, or `OOM`.
 
-This add-on uses **opencv-python-headless** and **no `sounddevice`** by default so the Docker build does not compile PortAudio.
+2. **Disk space** — PyTorch + Ultralytics needs **several GB free** during `pip install`. If you previously saw **GitRepo.clone blocked … not enough free space**, fix storage first.
+
+3. **RAM (Raspberry Pi)** — building this image can exceed **2–4 GB RAM** and get OOM-killed. Prefer **Home Assistant on x86_64 / NUC**, or build the image on a PC and load it (advanced), or run CatTracker on another machine with MQTT only.
+
+4. After changing the Dockerfile, use **⋯ → Rebuild** on the add-on so Supervisor doesn’t reuse a bad cached layer.
+
+This add-on uses **opencv-python-headless** and **no PortAudio** (no `sounddevice` in the image).
 
 ## MQTT
 
