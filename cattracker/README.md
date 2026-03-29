@@ -43,6 +43,10 @@ Supervisor often hides the real error behind that message. You need the **build*
 
 This add-on uses **opencv-python-headless** and **no PortAudio** (no `sounddevice` in the image).
 
+### `apt-get: not found` / `/bin/ash`
+
+Supervisor was using an **Alpine** base while the Dockerfile used **`apt-get`** (Debian). This repo’s **`build.yaml`** now pins **`ghcr.io/home-assistant/*-base-debian:bookworm`** so the image is always **Debian** with `apt-get`. Use add-on **1.0.3+** and **Rebuild**.
+
 ## MQTT
 
 With **mqtt_host** set, CatTracker publishes Home Assistant **MQTT discovery** configs:

@@ -1,5 +1,5 @@
-# Home Assistant injects BUILD_FROM, BUILD_ARCH, BUILD_VERSION when building.
-ARG BUILD_FROM=python:3.12-slim-bookworm
+# Supervisor sets BUILD_FROM from build.yaml (must be Debian here — Alpine has no apt-get).
+ARG BUILD_FROM
 FROM ${BUILD_FROM}
 
 ARG BUILD_ARCH=unknown
@@ -15,7 +15,11 @@ ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
     PIP_NO_CACHE_DIR=1 \
     PYTHONUNBUFFERED=1
 
+# HA base-debian is minimal: install Python 3.11 + venv + runtime libs.
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 \
+    python3-venv \
+    python3-pip \
     ffmpeg \
     jq \
     libglib2.0-0 \
@@ -32,7 +36,7 @@ RUN chmod +x /run.sh
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
-# Arch-aware torch: /whl/cpu is for amd64 only; aarch64 uses PyPI wheels (Pi-friendly).
+# amd64: smaller CPU wheels from PyTorch; aarch64 (Pi): full wheels from PyPI.
 RUN pip install --upgrade pip setuptools wheel \
  && ARCH="$(uname -m)" \
  && if [ "$ARCH" = "x86_64" ]; then \

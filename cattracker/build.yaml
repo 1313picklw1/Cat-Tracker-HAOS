@@ -1,5 +1,7 @@
 ---
+# Official Home Assistant Debian images (glibc + apt). Supervisor often injects Alpine
+# for generic bases; these force Debian so apt-get in the Dockerfile works.
 build_from:
-  aarch64: python:3.12-slim-bookworm
-  amd64: python:3.12-slim-bookworm
+  aarch64: ghcr.io/home-assistant/aarch64-base-debian:bookworm
+  amd64: ghcr.io/home-assistant/amd64-base-debian:bookworm
 args: {}
